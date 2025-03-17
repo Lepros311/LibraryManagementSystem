@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "LuZvvUZibB8=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Andrew\\Documents\\coding stuff\\C#\\The C# Academy\\LibraryManagementSystem\\LibraryManagementSystem.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Andrew\\.nuget\\packages\\spectre.console\\0.49.1\\spectre.console.0.49.1.nupkg.sha512"
+  ],
+  "logs": []
+}
