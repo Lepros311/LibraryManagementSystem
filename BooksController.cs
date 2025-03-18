@@ -1,11 +1,11 @@
 ﻿using LibraryManagementSystem.Models;
 using Spectre.Console;
 
-namespace LibraryManagementSystem;
+namespace LibraryManagementSystem.Controllers;
 
-internal class BooksController
+internal class BooksController : BaseController, IBaseController
 {
-    internal void ViewBooks()
+    public void ViewItems()
     {
         var table = new Table();
         table.Border(TableBorder.Rounded);
@@ -18,7 +18,7 @@ internal class BooksController
         table.AddColumn("[yellow]Pages[/]");
 
         // Filtering only items of the book type
-        var books = MockDatabase.Books.OfType<Book>();
+        var books = MockDatabase.LibraryItems.OfType<Book>();
 
         foreach (var book in books)
         {
@@ -37,7 +37,7 @@ internal class BooksController
         Console.ReadKey();
     }
 
-    internal void AddBook()
+    public void AddItem()
     {
         var title = AnsiConsole.Ask<string>("Enter the [green]title[/] of the book to add:");
         var author = AnsiConsole.Ask<string>("Enter the [green]author[/] of the book:");
@@ -45,24 +45,24 @@ internal class BooksController
         var location = AnsiConsole.Ask<string>("Enter the [green]location[/] of the book:");
         var pages = AnsiConsole.Ask<int>("Enter the [green]number of pages[/] in the book:");
 
-        if (MockDatabase.Books.OfType<Book>().Any(b => b.Name.Equals(title, StringComparison.OrdinalIgnoreCase)))
+        if (MockDatabase.LibraryItems.OfType<Book>().Any(b => b.Name.Equals(title, StringComparison.OrdinalIgnoreCase)))
         {
-            AnsiConsole.MarkupLine("[red]This book already exists.[/]");
+            DisplayMessage("Book added successfully!", "green");
         }
         else
         {
-            var newBook = new Book(MockDatabase.Books.Count + 1, title, author, category, location, pages);
-            MockDatabase.Books.Add(newBook);
-            AnsiConsole.MarkupLine("[green]Book added successfully![/]");
+            var newBook = new Book(MockDatabase.LibraryItems.Count + 1, title, author, category, location, pages);
+            MockDatabase.LibraryItems.Add(newBook);
+            DisplayMessage("Book added successfully!", "green");
         }
 
-        AnsiConsole.MarkupLine("Press Any Key to Continue.");
+        DisplayMessage("Press Any Key to Continue.");
         Console.ReadKey();
     }
 
-    internal void DeleteBook()
+    public void DeleteItem()
     {
-        var books = MockDatabase.Books.OfType<Book>().ToList();
+        var books = MockDatabase.LibraryItems.OfType<Book>().ToList();
 
         if (books.Count == 0)
         {
@@ -74,18 +74,26 @@ internal class BooksController
         var bookToDelete = AnsiConsole.Prompt(
             new SelectionPrompt<Book>()
                 .Title("Select a [red]book[/] to delete:")
+                .UseConverter(b => $"{b.Name} by {b.Author}")
                 .AddChoices(books));
 
-        if (MockDatabase.Books.Remove(bookToDelete))
+        if (ConfirmDeletion(bookToDelete.Name))
         {
-            AnsiConsole.MarkupLine("[red]Book deleted successfully![/]");
+            if (MockDatabase.LibraryItems.Remove(bookToDelete))
+            {
+                DisplayMessage("Book deleted successfully!", "red");
+            }
+            else
+            {
+                DisplayMessage("Book not found.", "red");
+            }
         }
         else
         {
-            AnsiConsole.MarkupLine("[red]Book not found.[/]");
+            DisplayMessage("Deletion canceled.", "yellow");
         }
 
-        AnsiConsole.MarkupLine("Press Any Key to Continue.");
+        DisplayMessage("Press Any Key to Continue.", "green");
         Console.ReadKey();
     }
 }
