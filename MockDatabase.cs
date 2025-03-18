@@ -2,7 +2,7 @@
 {
     internal class MockDatabase
     {
-        internal List<string> Books = new()
+        internal static List<Book> Books = new()
         {
         
             new Book("The Great Gatsby", 180),

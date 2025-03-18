@@ -1,5 +1,5 @@
 ﻿using Spectre.Console;
-using LibraryManagementSystem.Enums;
+using static LibraryManagementSystem.Enums;
 
 namespace LibraryManagementSystem;
 
